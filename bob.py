@@ -3,18 +3,11 @@ from SimulaQron.cqc.pythonLib.cqc import CQCConnection
 from shared import *
 
 
-def decode(conn, qb, basis):
-    if basis == 1:
-        qb.H()
-
-    return qb.measure()
-
-
 def main(n):
     with CQCConnection('Bob') as bob:
 
-        bases = [ randint(0, 1) for i in range(n) ]
-        print("Bob bases:   ", bases)
+        theta_tilde = [ randint(0, 1) for i in range(n) ]
+        print("Bob bases:   ", theta_tilde)
 
         qubits = []
 
@@ -24,32 +17,32 @@ def main(n):
             if r == 0:
                 qubits[i].X()
 
-        bits = [ decode(bob, qubits[i], bases[i]) for i in range(n) ]
-        print("Bob bits:    ", bits)
+        x_tilde = [ decode(bob, qubits[i], theta_tilde[i]) for i in range(n) ]
+        print("Bob bits:    ", x_tilde)
 
         bob.sendClassical('Alice', MSG_RECV_AND_MEAS)
 
-        alice_bases = deserialize(bob.recvClassical(), to_list=True)
-        assert len(alice_bases) == n, "Expected bases list of length {}".format(n)
+        theta = deserialize(bob.recvClassical(), to_list=True)
+        assert len(theta) == n, "Expected bases list of length {}".format(n)
 
-        bob.sendClassical('Alice', bases)
+        bob.sendClassical('Alice', theta_tilde)
 
-        common_bases = find_common_bases(n, bases, alice_bases)
+        theta_common = find_common_bases(theta, theta_tilde)
 
-        filtered = filter_bits(bits, common_bases)
-        filt_count = len(filtered)
-        print("Bob filtered:", filtered)
+        x_common = filter_bits(x_tilde, theta_common)
+        x_common_count = len(x_common)
+        print("Bob x_common_count:", x_common_count)
 
         alice_syndrome = deserialize(bob.recvClassical(), to_list=True)
-        error_estimate_padded = recon_decode(alice_syndrome, pad_len_7(filtered))
+        error_estimate_padded = recon_decode(alice_syndrome, pad_len_7(x_common))
         print("Bob estimate padded:", error_estimate_padded)
-        filtered_estimate = unpad_len_7(error_estimate_padded, filt_count)
+        filtered_estimate = unpad_len_7(error_estimate_padded, x_common_count)
         print("Bob estimate:", filtered_estimate)
 
         seed = deserialize(bob.recvClassical(), to_list=True)
-        assert len(seed) == filt_count, "Expected seed of length {}".format(filt_count)
+        assert len(seed) == x_common_count, "Expected seed of length {}".format(x_common_count)
 
-        key = simple_extractor(filt_count, filtered, seed)
+        key = simple_extractor(x_common, seed)
         print("Bob key:", key)
 
 
