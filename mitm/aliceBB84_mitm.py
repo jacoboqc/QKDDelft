@@ -1,6 +1,10 @@
-from SimulaQron.cqc.pythonLib.cqc import CQCConnection, qubit
 import random
 import time
+import sys
+sys.path.append('..')
+
+from SimulaQron.cqc.pythonLib.cqc import CQCConnection, qubit
+from shared import *
 
 
 def error_rate(cqc, x_remain):
@@ -32,41 +36,35 @@ def error_rate(cqc, x_remain):
 def main():
     n = 10
 
-    with CQCConnection("Alice") as Alice:
-        x = [random.randint(0, 1) for _ in range(n)]
-        theta = [random.randint(0, 1) for _ in range(n)]
-        for i in range(0, n):
-            q = qubit(Alice)
-            if theta[i]==1:
-                q.H()
-            if x[i]==1:
-                q.X()
-            Alice.sendQubit(q, "Eve")
+    with CQCConnection("Alice") as alice:
+        x = [ random.randint(0, 1) for _ in range(n) ]
+        theta = [ random.randint(0, 1) for _ in range(n) ]
+
+        for i in range(n):
+            q = encode(alice, x[i], theta[i])
+
+            alice.sendQubit(q, "Eve")
             print("Alice has sent state {} in base {} to Bob".format(x[i], theta[i]))
 
-        Alice.sendClassical("Eve", theta)
-        theta_tilde = Alice.recvClassical()
+        alice.sendClassical("Eve", theta)
+        theta_tilde = alice.recvClassical()
 
-        # filter strings for those rounds whith equal basis
-        x_remain = []
-        for i in range(n):
-            if theta[i] == theta_tilde[i]:
-                x_remain.append(theta[i])
+        # filter strings for those rounds with equal basis
+        theta_common = find_common_bases(theta, theta_tilde)
+        x_remain = [ x[i] for i in theta_common ]
 
         # generate seed for extractor
         r = [random.randint(0, 1) for _ in range(len(x_remain))]
-        Alice.sendClassical("Eve", r)
+        alice.sendClassical("Eve", r)
 
         # seeded extractor
-        k = 0
-        for i in range(len(x_remain)):
-            k = (k + x_remain[i] + r[i]) % 2
+        k = simple_extractor(x_remain, r)
 
         print("> (Alice) The key is: {}".format(k))
 
         # error rate (Alice and Bob compute error rates without Eve interfering)
         time.sleep(5)
-        error = error_rate(Alice, x_remain)
+        error = error_rate(alice, x_remain)
         print("Alice computed error rate: ", error)
 
 

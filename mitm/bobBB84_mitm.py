@@ -1,5 +1,9 @@
-from SimulaQron.cqc.pythonLib.cqc import CQCConnection
 import random
+import sys
+sys.path.append('..')
+
+from SimulaQron.cqc.pythonLib.cqc import CQCConnection
+from shared import *
 
 
 def error_rate(cqc, x_remain):
@@ -29,30 +33,29 @@ def main():
     n = 10
 
     with CQCConnection("Bob") as Bob:
-        theta = [random.randint(0, 1) for _ in range(n)]
+        theta_tilde = [ random.randint(0, 1) for _ in range(n) ]
+        x_tilde = []
+
+
         for i in range(0, n):
             q = Bob.recvQubit()
-            if theta[i] == 1:
+            if theta_tilde[i] == 1:
                 q.H()
-            m = q.measure()
-            print("Bob has received the state {}, measured in base {}".format(m, theta[i]))
+            x_tilde.append(q.measure())
+            print("Bob has received the state {}, measured in base {}".format(x_tilde[i], theta_tilde[i]))
 
-        theta_tilde = Bob.recvClassical()
-        Bob.sendClassical("Eve", theta)
+        theta = Bob.recvClassical()
+        Bob.sendClassical("Eve", theta_tilde)
 
-        # filter strings for those rounds whith equal basis
-        x_remain = []
-        for i in range(n):
-            if theta[i] == theta_tilde[i]:
-                x_remain.append(theta[i])
+        # filter strings for those rounds with equal basis
+        theta_common = find_common_bases(theta, theta_tilde)
+        x_remain = [ x_tilde[i] for i in theta_common ]
 
         # receive seed for extractor
         r = list(Bob.recvClassical())
 
         # seeded extractor
-        k = 0
-        for i in range(len(x_remain)):
-            k = (k + x_remain[i] + r[i]) % 2
+        k = simple_extractor(x_remain, r)
 
         print("> (Bob) The key is: {}".format(k))
 
