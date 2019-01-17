@@ -14,7 +14,7 @@ def main(n):
     with CQCConnection('Bob') as bob:
 
         bases = [ randint(0, 1) for i in range(n) ]
-        # print("Bob bases:", bases)
+        print("Bob bases:   ", bases)
 
         qubits = []
 
@@ -25,7 +25,7 @@ def main(n):
                 qubits[i].X()
 
         bits = [ decode(bob, qubits[i], bases[i]) for i in range(n) ]
-        # print("Bob bits:", bits)
+        print("Bob bits:    ", bits)
 
         bob.sendClassical('Alice', MSG_RECV_AND_MEAS)
 
