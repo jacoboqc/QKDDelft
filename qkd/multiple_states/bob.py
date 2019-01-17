@@ -4,7 +4,7 @@ sys.path.append('../..')
 
 from SimulaQron.cqc.pythonLib.cqc import CQCConnection
 
-from qkd.bb84 import BB84_encode
+from qkd.bb84 import BB84_decode
 from qkd.utils import parse_n
 
 
