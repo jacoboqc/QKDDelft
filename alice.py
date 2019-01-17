@@ -20,10 +20,10 @@ def main(n):
     with CQCConnection('Alice') as alice:
 
         bits = [ randint(0, 1) for i in range(n) ]
-        print("Alice bits:", bits)
+        # print("Alice bits:", bits)
 
         bases = [ randint(0, 1) for i in range(n) ]
-        print("Alice bases:", bases)
+        # print("Alice bases:", bases)
 
         qubits = [ encode(alice, bits[i], bases[i]) for i in range(n) ]
 
@@ -39,10 +39,18 @@ def main(n):
         assert len(bob_bases) == n, "Expected bases list of length {}".format(n)
 
         common_bases = find_common_bases(n, bases, bob_bases)
-        print("common bases:", common_bases)
+        # print("common bases:", common_bases)
 
         filtered = filter_bits(bits, common_bases)
         filt_count = len(filtered)
+        print("Alice filtered:", filtered)
+
+        padded = pad_len_7(filtered)
+        print("Alice padded:", padded)
+        syndrome = hamming(padded)
+        print('syndrome:', syndrome)
+
+        alice.sendClassical('Bob', syndrome)
 
         seed = [ randint(0, 1) for i in range(filt_count) ]
         print('seed:', seed)
