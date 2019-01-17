@@ -20,10 +20,10 @@ def main(n):
     with CQCConnection('Alice') as alice:
 
         bits = [ randint(0, 1) for i in range(n) ]
-        print("Alice bits:", bits)
+        print("Alice bits:  ", bits)
 
         bases = [ randint(0, 1) for i in range(n) ]
-        print("Alice bases:", bases)
+        print("Alice bases: ", bases)
 
         qubits = [ encode(alice, bits[i], bases[i]) for i in range(n) ]
 
