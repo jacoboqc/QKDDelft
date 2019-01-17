@@ -41,23 +41,23 @@ def main():
         Bob.sendClassical("Eve", theta)
 
         # filter strings for those rounds whith equal basis
-        s = []
+        x_remain = []
         for i in range(n):
             if theta[i] == theta_tilde[i]:
-                s.append(theta[i])
+                x_remain.append(theta[i])
 
         # receive seed for extractor
         r = list(Bob.recvClassical())
 
         # seeded extractor
         k = 0
-        for i in range(len(s)):
-            k = (k + s[i] + r[i]) % 2
+        for i in range(len(x_remain)):
+            k = (k + x_remain[i] + r[i]) % 2
 
         print("> (Bob) The key is: {}".format(k))
 
         # error rate (Alice and Bob compute error rates without Eve interfering)
-        error = error_rate(Bob, s)
+        error = error_rate(Bob, x_remain)
         print("Bob computed error rate: ", error)
 
 
