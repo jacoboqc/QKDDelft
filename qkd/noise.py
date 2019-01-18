@@ -6,7 +6,8 @@ def testround(filt_count, filtered):
     filtered_update = []
     numberset = list(range(0, filt_count))
     if filt_count == 1:
-        test = "Not enough common basis to test"
+        print("Not enough common basis to test, protocol will be aborted")
+        exit()        
     else:
         for i in range(int(filt_count / 2)):
             rannum = choice(numberset)

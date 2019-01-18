@@ -60,7 +60,7 @@ def main(n):
         alice.sendClassical('Bob', test_alice)        
         e_s, e_h = testing(test_alice, test_bob, testindex, common_bases, filtered, bases)
         e_t, e_s, e_h = errorconversion(e_s, e_h, test_alice)     
-        print("Error on Alice's side \nerror = {}% \nerror standard basis= {}% \nerror hadamard basis= {}% \n".format(e_t, e_s, e_h))
+        print("Errors on Alice's side \nerror = {}% \nerror standard basis= {}% \nerror hadamard basis= {}% \n".format(e_t, e_s, e_h))
 
 
 
