@@ -43,7 +43,7 @@ def main(n):
 
         x_tilde = [BB84_decode(qubits[i], theta_tilde[i]) for i in range(n)]
 
-        #bob.sendClassical('Eve', MSG_RECV_AND_MEAS)
+        bob.sendClassical('Eve', MSG_RECV_AND_MEAS)
 
         theta = deserialize(bob.recvClassical(), to_list=True)
         assert len(theta) == n, "Expected bases list of length {}".format(n)

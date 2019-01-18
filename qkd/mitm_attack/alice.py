@@ -46,8 +46,8 @@ def main(n):
         for qb in qubits:
             alice.sendQubit(qb, 'Eve')
 
-        #msg = deserialize(alice.recvClassical())
-        #assert msg == MSG_RECV_AND_MEAS, "Unexpected message from Bob"
+        msg = deserialize(alice.recvClassical())
+        assert msg == MSG_RECV_AND_MEAS, "Unexpected message from Bob"
 
         alice.sendClassical('Eve', theta)
 
