@@ -33,10 +33,16 @@ def main(n):
 
         x_common = [x[i] for i in theta_common]
 
+        # choose random subset for testing
         x_test, test_indices = sample_subset(x_common)
 
+        # announce to Bob which bits to test
         alice.sendClassical('Bob', test_indices)
+
+        # receive Bob's test bits
         x_test_tilde = deserialize(alice.recvClassical(), to_list=True)
+
+        # send own test bits
         alice.sendClassical('Bob', x_test)
 
         error_count = count_errors(x_test, x_test_tilde)
@@ -45,6 +51,7 @@ def main(n):
             exit()
 
         print('Error count in tested bits is {}. Continuing'.format(error_count))
+        # not too many errors, so info reconciliation is likely to succeed
 
         x_remain = get_remaining(x_common, test_indices)
 
@@ -53,6 +60,7 @@ def main(n):
 
         print('(Alice) x_remain = {}'.format(x_remain))
 
+        # send syndrome for information reconciliation
         syndrome = hamming_syndrome(x_remain)
         # print('alice syndrome:', syndrome)
         alice.sendClassical('Bob', syndrome)

@@ -12,7 +12,7 @@ from qkd.noise import testround, testing, errorconversion
 
 def main(n):
     with CQCConnection('Alice') as alice:
-    	#STEP 1 BB84: Alice creates a string x and basis string, encodes it in qubits and sends it to bob
+        #STEP 1 BB84: Alice creates a string x and basis string, encodes it in qubits and sends it to bob
         bits = [ randint(0, 1) for i in range(n) ]
         print("Alice bits:", bits)
 
@@ -26,7 +26,7 @@ def main(n):
 
 
 
-      	#STEP 3 BB84: Alice recieves message from bob that he has measured and recieved the bits.
+        #STEP 3 BB84: Alice recieves message from bob that he has measured and recieved the bits.
         msg = deserialize(alice.recvClassical())
         assert msg == MSG_RECV_AND_MEAS, "Unexpected message from Bob"
 

@@ -80,8 +80,11 @@ def estimate_error(cs):
     return ERROR_ESTIMATE_LISTS[len(cs)][bin]
 
 def recon_decode(ca, xb):
+    # ca = syndrome of alice
+    # xb is bitstring of bob
     cb = hamming_syndrome(xb)
     cs = list_sum(ca, cb)
+    # cs  = syndrome of error
     s_est = estimate_error(cs)
     s_est = s_est[:len(xb)]
     return list_sum(xb, s_est), s_est
@@ -99,6 +102,8 @@ ERROR_ESTIMATE_LISTS = {
 }
 
 def hamming_syndrome(v):
+    # pad to length 3, 7, or 11 depending on initial length
+
     if len(v) <= 3:
         x = pad(v, 3)
         n = 3
@@ -111,8 +116,9 @@ def hamming_syndrome(v):
     else:
         assert False, "codeword longer than 11 bits"
 
+    # calculate codeword
     arr = np.array(x)
     parity_matrix = PARITY_MATRICES[n]
-    codeword = parity_matrix.dot(arr).tolist()
-    codeword = [cw % 2 for cw in codeword]
-    return codeword
+    syndrome = parity_matrix.dot(arr).tolist()
+    syndrome = [syn % 2 for syn in syndrome]
+    return syndrome

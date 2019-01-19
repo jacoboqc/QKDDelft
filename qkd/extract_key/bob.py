@@ -32,7 +32,7 @@ def main(n):
 
         x_remain = [x_tilde[i] for i in theta_common]
         x_remain_count = len(x_remain)
-        print("Bob x_remain_count:", x_remain_count)
+        # print("Bob x_remain_count:", x_remain_count)
 
         seed = deserialize(bob.recvClassical(), to_list=True)
         assert len(seed) == x_remain_count, "Expected seed of length {}".format(x_remain_count)

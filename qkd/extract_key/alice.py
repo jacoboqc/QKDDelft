@@ -32,13 +32,12 @@ def main(n):
 
         x_remain = [x[i] for i in theta_common]
         x_remain_count = len(x_remain)
-        print("Alice x_remain_count:", x_remain_count)
+        # print("Alice x_remain_count:", x_remain_count)
 
         seed = [randint(0, 1) for i in range(x_remain_count)]
-        print('seed:', seed)
+        # print('seed:', seed)
 
         key = simple_extractor(x_remain, seed)
-        print("Alice key:", key)
 
         alice.sendClassical('Bob', seed)
 

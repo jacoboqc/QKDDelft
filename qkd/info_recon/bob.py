@@ -34,14 +34,21 @@ def main(n):
 
         x_common = [x_tilde[i] for i in theta_common]
 
+        # receive which bits to test
         test_indices = deserialize(bob.recvClassical(), to_list=True)
         x_test_tilde = [x_common[i] for i in test_indices]
+
+        # send test bits to Alice
         bob.sendClassical('Alice', x_test_tilde)
+
+        # receive ALice's test bits
         x_test = deserialize(bob.recvClassical(), to_list=True)
 
         if count_errors(x_test, x_test_tilde) > 1:
             print('(Bob): More than 1 error in tested bits. Abort.')
             exit()
+
+        # not too many errors, so info reconciliation is likely to succeed
 
         x_remain_tilde = get_remaining(x_common, test_indices)
 
@@ -50,8 +57,10 @@ def main(n):
 
         print('(Bob) x_remain_tilde = {}'.format(x_remain_tilde))
 
+        # receive Alice's syndrome
         syndrome_alice = deserialize(bob.recvClassical(), to_list=True)
 
+        # estimate error and update own bits
         x_remain_est, err_est = recon_decode(syndrome_alice, x_remain_tilde)
         print('(Bob) error estimate:', err_est)
         print('(Bob) x_remain estimate:', x_remain_est)
