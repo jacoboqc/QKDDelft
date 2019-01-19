@@ -2,9 +2,9 @@
   
 Authors: 
 - Bart van der Vecht - 4981332  
-- Jurgen Dijkema - ??  
+- Jurgen Dijkema - 4446984  
 - Ruth Guimarey Docampo - 4935462  
-- Jaco ?? - ??  
+- Jacobo Quintáns Castro - 4935470
   
   
 ## Implementation  
