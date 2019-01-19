@@ -2,7 +2,7 @@
   
 Authors: 
 - Bart van der Vecht - 4981332  
-- Jurgen Dijkema - ??  
+- Jurgen Dijkema - 4446984  
 - Ruth ?? - ??  
 - Jacobo Quintáns Castro - 4935470
   
